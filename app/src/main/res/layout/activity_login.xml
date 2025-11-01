@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:backgroundTintMode="screen"
-    tools:context=".login"
+    tools:context=".LoginActivity"
+    android:fitsSystemWindows="true"
     tools:ignore="HardcodedText">
 
     <ScrollView

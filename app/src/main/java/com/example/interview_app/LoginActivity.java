@@ -12,7 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class login extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(login.this,MainActivity.class);
+                Intent i=new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -41,7 +41,7 @@ public class login extends AppCompatActivity {
         signupTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(login.this,MainActivity.class);
+                Intent i=new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(i);
                 finish();
             }
