@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <color name="background">#FCFCFC</color>
+        <color name="foreground">#000000</color>
+        <color name="card">#FFFFFF</color>
+        <color name="card_foreground">#000000</color>
+        <color name="popover">#FCFCFC</color>
+        <color name="popover_foreground">#000000</color>
+        <color name="primary">#000000</color>
+        <color name="primary_foreground">#FFFFFF</color>
+        <color name="secondary">#EBEBEB</color>
+        <color name="secondary_foreground">#000000</color>
+        <color name="muted">#F5F5F5</color>
+        <color name="muted_foreground">#525252</color>
+        <color name="accent">#EBEBEB</color>
+        <color name="accent_foreground">#000000</color>
+        <color name="destructive">#E54B4F</color>
+        <color name="destructive_foreground">#FFFFFF</color>
+        <color name="border">#E4E4E4</color>
+        <color name="input">#EBEBEB</color>
+        <color name="ring">#000000</color>
+
+        <!-- Charts -->
+        <color name="chart_1">#FFAE04</color>
+        <color name="chart_2">#2D62EF</color>
+        <color name="chart_3">#A4A4A4</color>
+        <color name="chart_4">#E4E4E4</color>
+        <color name="chart_5">#747474</color>
+
+        <!-- Sidebar -->
+        <color name="sidebar">#FCFCFC</color>
+        <color name="sidebar_foreground">#000000</color>
+        <color name="sidebar_primary">#000000</color>
+        <color name="sidebar_primary_foreground">#FFFFFF</color>
+        <color name="sidebar_accent">#EBEBEB</color>
+        <color name="sidebar_accent_foreground">#000000</color>
+        <color name="sidebar_border">#EBEBEB</color>
+        <color name="sidebar_ring">#000000</color>
+
+</resources>
