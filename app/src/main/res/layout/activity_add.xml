@@ -16,10 +16,8 @@
         android:orientation="vertical"
         tools:ignore="UselessParent">
 
-        <!-- Header View -->
+
         <com.google.android.material.appbar.MaterialToolbar
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -71,7 +69,7 @@
 
 
 
-        <!-- ListView (takes the rest of the space) -->
+
         <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"

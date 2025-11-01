@@ -36,5 +36,8 @@
     <color name="sidebar_accent_foreground">#FFFFFF</color>
     <color name="sidebar_border">#333333</color>
     <color name="sidebar_ring">#A4A4A4</color>
+
+    <color name="green_500">#22c55e</color>
+    <color name="yellow_500">#eab308</color>
 </resources>
 

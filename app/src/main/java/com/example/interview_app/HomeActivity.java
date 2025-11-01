@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
 
         ImageButton logoutButton=findViewById(R.id.logoutButton);
         ImageButton fabAdd=findViewById(R.id.fabAdd);
+        ImageView profileImage=findViewById(R.id.profileImage);
 
         listView = findViewById(R.id.listView);
         cardItems = new ArrayList<>();
@@ -67,9 +69,9 @@ public class HomeActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(HomeActivity.this, LoginActivity.class);
+                Intent i=new Intent(HomeActivity.this, InterviewActivity.class);
                 startActivity(i);
-                finish();
+
             }
         });
 
@@ -77,6 +79,14 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i=new Intent(HomeActivity.this,AddActivity.class);
+                startActivity(i);
+            }
+        });
+
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(HomeActivity.this, DashboardActivity.class);
                 startActivity(i);
             }
         });

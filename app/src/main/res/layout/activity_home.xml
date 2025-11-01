@@ -10,25 +10,26 @@
     tools:context=".HomeActivity"
     tools:ignore="HardcodedText">
 
-
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical">
 
-    <!-- Header View -->
     <LinearLayout
         android:id="@+id/headerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="20dp"
-        android:paddingVertical="8dp"
-        android:minHeight="25dp"
+        android:paddingVertical="12dp"
+        android:minHeight="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/background">
+        android:background="@color/background"
+        android:elevation="8dp"
+        android:outlineProvider="bounds"
+        android:translationZ="8dp">
 
-      <!-- Profile Image -->
+
       <ImageView
           android:id="@+id/profileImage"
           android:layout_width="40dp"
@@ -37,16 +38,14 @@
           android:src="@drawable/ic_profile_placeholder"
           android:background="@drawable/circle_bg"
           android:clipToOutline="true"
-          android:contentDescription="Profile"
-          tools:ignore="UnusedAttribute" />
-
+          android:contentDescription="Profile" />
 
       <View
           android:layout_width="0dp"
-          android:layout_height="0dp"
+          android:layout_height="match_parent"
           android:layout_weight="1" />
 
-      <!-- Logout Button -->
+
       <ImageButton
           android:id="@+id/logoutButton"
           android:layout_width="36dp"
@@ -57,7 +56,7 @@
           app:tint="@color/destructive" />
     </LinearLayout>
 
-    <!-- ListView (takes the rest of the space) -->
+    <!-- List below header -->
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
@@ -72,11 +71,9 @@
         android:paddingBottom="100dp"
         android:background="@color/secondary"
         android:scrollbars="none" />
-
-
   </LinearLayout>
 
-  <!-- Floating Add Button (fixed at bottom right) -->
+
   <com.google.android.material.floatingactionbutton.FloatingActionButton
       android:id="@+id/fabAdd"
       android:layout_width="wrap_content"
@@ -84,8 +81,6 @@
       android:layout_gravity="bottom|end"
       android:layout_margin="24dp"
       android:contentDescription="Add"
-      android:clickable="true"
-      android:focusable="true"
       android:src="@drawable/ic_add"
       app:backgroundTint="@color/primary"
       app:tint="@color/primary_foreground"
