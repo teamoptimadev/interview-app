@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,25 +39,48 @@ public class HomeActivity extends AppCompatActivity {
         cardItems = new ArrayList<>();
 
 
-        cardItems.add(new CardItem("Frontend", "A responsive portfolio website built with React and Tailwind CSS."));
-        cardItems.add(new CardItem("Backend", "A RESTful API for managing book inventory using Spring Boot."));
-        cardItems.add(new CardItem("Full Stack", "A task management web app with authentication and CRUD features."));
-        cardItems.add(new CardItem("Android Development", "A fitness tracker app with daily goals and progress charts."));
-        cardItems.add(new CardItem("Backend", "A microservice-based e-commerce backend using Node.js and MongoDB."));
-        cardItems.add(new CardItem("Frontend", "An interactive data visualization dashboard using Chart.js and D3.js."));
-        cardItems.add(new CardItem("Full Stack", "A social media app clone with likes, comments, and image sharing."));
-        cardItems.add(new CardItem("Android Development", "A weather app with location-based forecasts and dark mode."));
-        cardItems.add(new CardItem("Backend", "A payment gateway integration service using Stripe and Express.js."));
-        cardItems.add(new CardItem("Frontend", "A modern landing page with animations built using GSAP and React."));
-        cardItems.add(new CardItem("Full Stack", "A blogging platform with Markdown editor and JWT authentication."));
-        cardItems.add(new CardItem("Android Development", "A recipe app that fetches meal data from an external API."));
-        cardItems.add(new CardItem("Backend", "A chatbot backend powered by Python Flask and OpenAI API."));
-        cardItems.add(new CardItem("Frontend", "An AI-powered resume builder using React and local storage."));
-        cardItems.add(new CardItem("Full Stack", "A real-time collaborative notes app using WebSockets and Node.js."));
+//        cardItems.add(new CardItem("Frontend", "Modern UI development using React and Tailwind CSS for responsive and accessible web interfaces."));
+//        cardItems.add(new CardItem("Backend", "Server-side application development using Java Spring Boot with RESTful APIs and database integration."));
+//        cardItems.add(new CardItem("Full Stack", "Building scalable web applications integrating React frontend with Node.js and Express backend services."));
+//        cardItems.add(new CardItem("Android Development", "Developing native Android apps with Java and XML layouts, integrating APIs and local databases."));
+//        cardItems.add(new CardItem("React", "Developing interactive and modular React components with efficient state management using hooks and context."));
+//        cardItems.add(new CardItem("Next.js", "Creating optimized, SEO-friendly web applications with server-side rendering and API routes using Next.js."));
+//        cardItems.add(new CardItem("AIML", "Implementing machine learning models for predictive analytics, natural language processing, and computer vision tasks."));
+//        cardItems.add(new CardItem("Operating System", "Understanding process management, scheduling, memory allocation, and system calls in OS design."));
+//        cardItems.add(new CardItem("Computer Networks", "Studying network layers, protocols (TCP/IP, HTTP, DNS), and data transmission principles."));
+//        cardItems.add(new CardItem("Computer Architecture", "Analyzing CPU organization, instruction cycles, pipelining, and memory hierarchy in modern processors."));
+//        cardItems.add(new CardItem("Data Structures and Algorithms", "Solving computational problems using efficient data structures like trees, heaps, and graphs."));
+//        cardItems.add(new CardItem("Software Development", "Applying software engineering principles — version control, testing, and agile workflows for production systems."));
+
 
 
         adapter = new CardAdapter(this, cardItems);
         listView.setAdapter(adapter);
+
+        //empty check
+
+        LinearLayout emptyLayout = findViewById(R.id.emptyLayout);
+        Button addInterviewBtn = findViewById(R.id.addInterviewBtn);
+
+
+        if (cardItems.isEmpty()) {
+            listView.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
+        }
+
+        addInterviewBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, AddActivity.class);
+            startActivity(intent);
+        });
+
+        //end of empty check
+
+
+
+
 
         TextView footerView = new TextView(this);
         footerView.setText("End of List. Click on add button to add more.");
@@ -69,9 +94,9 @@ public class HomeActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(HomeActivity.this, InterviewActivity.class);
+                Intent i=new Intent(HomeActivity.this, LoginActivity.class);
                 startActivity(i);
-
+                finish();
             }
         });
 

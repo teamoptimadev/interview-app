@@ -71,6 +71,61 @@
         android:paddingBottom="100dp"
         android:background="@color/secondary"
         android:scrollbars="none" />
+
+<!--empty state-->
+    <LinearLayout
+        android:id="@+id/emptyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/secondary"
+        android:gravity="center"
+        android:paddingBottom="150dp"
+        android:visibility="gone"
+        >
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:contentDescription="empty state image"
+          android:src="@drawable/ic_empty_state_image"/>
+
+      <TextView
+          android:id="@+id/emptyText"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="No interviews yet"
+          android:textSize="18sp"
+          android:textStyle="bold"
+          android:textColor="@color/secondary_foreground"
+          android:layout_margin="12dp" />
+
+      <TextView
+        android:id="@+id/emptyDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You haven`t added any interviews yet. Get started by adding your first interview."
+        android:textSize="16sp"
+          android:paddingHorizontal="20dp"
+          android:gravity="center"
+        android:textColor="@color/muted_foreground"
+        android:layout_marginBottom="12dp" />
+
+
+      <Button
+          android:id="@+id/addInterviewBtn"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Add New Interview"
+          android:textStyle="bold"
+          android:backgroundTint="@color/primary"
+          android:textColor="@color/primary_foreground"
+          android:paddingHorizontal="20dp" />
+
+    </LinearLayout>
+
+<!--    empty state end-->
+
+
   </LinearLayout>
 
 
