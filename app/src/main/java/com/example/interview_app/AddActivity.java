@@ -1,7 +1,9 @@
 package com.example.interview_app;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -21,6 +25,8 @@ public class AddActivity extends AppCompatActivity {
     List<CardItem> cardItems;
     CardAdapter adapter;
 
+    DbHelper dbHelper;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,21 +38,23 @@ public class AddActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
         cardItems = new ArrayList<>();
 
+        dbHelper = new DbHelper(this);
 
-        cardItems.add(new CardItem("Frontend", "Modern UI development using React and Tailwind CSS for responsive and accessible web interfaces."));
-        cardItems.add(new CardItem("Backend", "Server-side application development using Java Spring Boot with RESTful APIs and database integration."));
-        cardItems.add(new CardItem("Full Stack", "Building scalable web applications integrating React frontend with Node.js and Express backend services."));
-        cardItems.add(new CardItem("Android Development", "Developing native Android apps with Java and XML layouts, integrating APIs and local databases."));
-        cardItems.add(new CardItem("React", "Developing interactive and modular React components with efficient state management using hooks and context."));
-        cardItems.add(new CardItem("Next.js", "Creating optimized, SEO-friendly web applications with server-side rendering and API routes using Next.js."));
-        cardItems.add(new CardItem("AIML", "Implementing machine learning models for predictive analytics, natural language processing, and computer vision tasks."));
-        cardItems.add(new CardItem("Operating System", "Understanding process management, scheduling, memory allocation, and system calls in OS design."));
-        cardItems.add(new CardItem("Computer Networks", "Studying network layers, protocols (TCP/IP, HTTP, DNS), and data transmission principles."));
-        cardItems.add(new CardItem("Computer Architecture", "Analyzing CPU organization, instruction cycles, pipelining, and memory hierarchy in modern processors."));
-        cardItems.add(new CardItem("Data Structures and Algorithms", "Solving computational problems using efficient data structures like trees, heaps, and graphs."));
-        cardItems.add(new CardItem("Software Development", "Applying software engineering principles — version control, testing, and agile workflows for production systems."));
+        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+        int userId = (int) prefs.getLong("user_id", -1);
 
+        if (userId == -1) {
+            Log.e("AddActivity", "No logged-in user found");
+            finish();
+            return;
+        }
 
+        List<CardItem> items = dbHelper.getAllInterviews();
+
+        for (CardItem item : items) {
+            Log.d("Interview", item.getTitle() + " - " + item.getDescription());
+            cardItems.add(new CardItem(item.getTitle(), item.getDescription()));
+        }
 
 
         adapter = new CardAdapter(this, cardItems);

@@ -1,6 +1,9 @@
 package com.example.interview_app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,9 +21,23 @@ public class LoginActivity extends AppCompatActivity {
 
     DbHelper dbHelper;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+        if (prefs.contains("user_id")) {
+            // User already logged in — skip login screen
+            Intent i = new Intent(this, HomeActivity.class);
+            startActivity(i);
+            finish();
+            return;
+        }
+
+
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -48,14 +65,43 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (dbHelper.checkUser(email, pass)) {
-                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                    Intent i=new Intent(LoginActivity.this,HomeActivity.class);
-                    startActivity(i);
-                    finish();
+                    SQLiteDatabase db = dbHelper.getReadableDatabase();
+                    Cursor cursor = db.rawQuery("SELECT id, full_name FROM users WHERE email=? AND password=?",
+                            new String[]{email, pass});
+
+                    int userId = -1;
+                    String fullName = null;
+
+                    if (cursor.moveToFirst()) {
+                        userId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                        fullName = cursor.getString(cursor.getColumnIndexOrThrow("full_name"));
+                    }
+                    cursor.close();
+
+                    if (userId != -1) {
+                        // Save login session
+                        android.content.SharedPreferences prefs =
+                                getSharedPreferences("UserSession", MODE_PRIVATE);
+                        android.content.SharedPreferences.Editor editor = prefs.edit();
+                        editor.putLong("user_id", userId);
+                        editor.putString("full_name", fullName);
+                        editor.apply();
+
+                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+
+                        Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+                        startActivity(i);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "User not found. Try again.", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
                 }
-                
+
+
+
 
             }
         });

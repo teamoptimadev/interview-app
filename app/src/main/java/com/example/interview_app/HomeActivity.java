@@ -2,8 +2,10 @@ package com.example.interview_app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +27,7 @@ public class HomeActivity extends AppCompatActivity {
     ListView listView;
     List<CardItem> cardItems;
     CardAdapter adapter;
+    DbHelper dbHelper;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -35,29 +38,36 @@ public class HomeActivity extends AppCompatActivity {
         ImageButton logoutButton=findViewById(R.id.logoutButton);
         ImageButton fabAdd=findViewById(R.id.fabAdd);
         ImageView profileImage=findViewById(R.id.profileImage);
-
         listView = findViewById(R.id.listView);
+
+        dbHelper = new DbHelper(this);
+
+        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+        int userId = (int) prefs.getLong("user_id", -1);
+        String fullName = prefs.getString("full_name", "User");
+
+        if (userId == -1) {
+            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+
+
+
+        List<CardItem> items = dbHelper.getAllHomeInterviews(userId);
+
         cardItems = new ArrayList<>();
 
-
-
-        cardItems.add(new CardItem("Frontend", "Modern UI development using React and Tailwind CSS for responsive and accessible web interfaces."));
-//        cardItems.add(new CardItem("Backend", "Server-side application development using Java Spring Boot with RESTful APIs and database integration."));
-//        cardItems.add(new CardItem("Full Stack", "Building scalable web applications integrating React frontend with Node.js and Express backend services."));
-//        cardItems.add(new CardItem("Android Development", "Developing native Android apps with Java and XML layouts, integrating APIs and local databases."));
-//        cardItems.add(new CardItem("React", "Developing interactive and modular React components with efficient state management using hooks and context."));
-//        cardItems.add(new CardItem("Next.js", "Creating optimized, SEO-friendly web applications with server-side rendering and API routes using Next.js."));
-//        cardItems.add(new CardItem("AIML", "Implementing machine learning models for predictive analytics, natural language processing, and computer vision tasks."));
-//        cardItems.add(new CardItem("Operating System", "Understanding process management, scheduling, memory allocation, and system calls in OS design."));
-//        cardItems.add(new CardItem("Computer Networks", "Studying network layers, protocols (TCP/IP, HTTP, DNS), and data transmission principles."));
-//        cardItems.add(new CardItem("Computer Architecture", "Analyzing CPU organization, instruction cycles, pipelining, and memory hierarchy in modern processors."));
-//        cardItems.add(new CardItem("Data Structures and Algorithms", "Solving computational problems using efficient data structures like trees, heaps, and graphs."));
-//        cardItems.add(new CardItem("Software Development", "Applying software engineering principles — version control, testing, and agile workflows for production systems."));
-
-
+        for (CardItem item : items) {
+            Log.d("Interview", item.getTitle() + " - " + item.getDescription());
+            cardItems.add(new CardItem(item.getTitle(), item.getDescription()));
+        }
 
         adapter = new CardAdapter(this, cardItems);
         listView.setAdapter(adapter);
+
 
         //empty check
 
@@ -75,6 +85,7 @@ public class HomeActivity extends AppCompatActivity {
 
         addInterviewBtn.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, AddActivity.class);
+            intent.putExtra("user_id", userId);
             startActivity(intent);
         });
 
@@ -92,13 +103,12 @@ public class HomeActivity extends AppCompatActivity {
 
         listView.addFooterView(footerView, null, false);
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(HomeActivity.this, LoginActivity.class);
-                startActivity(i);
-                finish();
-            }
+        logoutButton.setOnClickListener(view -> {
+            SharedPreferences prefsLogout = getSharedPreferences("UserSession", MODE_PRIVATE);
+            prefsLogout.edit().clear().apply();
+            Intent i = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
         });
 
         fabAdd.setOnClickListener(new View.OnClickListener() {
@@ -118,4 +128,23 @@ public class HomeActivity extends AppCompatActivity {
         });
 
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+        int userId = (int) prefs.getLong("user_id", -1);
+        if (userId == -1) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+        List<CardItem> updatedItems = dbHelper.getAllHomeInterviews(userId);
+        cardItems.clear();
+        cardItems.addAll(updatedItems);
+        adapter.notifyDataSetChanged();
+    }
+
 }

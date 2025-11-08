@@ -2,11 +2,13 @@ package com.example.interview_app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 
@@ -15,9 +17,9 @@ import java.util.List;
 
 public class CardAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<CardItem> originalList;
-    private List<CardItem> filteredList;
+    private final Context context;
+    private final List<CardItem> originalList;
+    private final List<CardItem> filteredList;
 
     public CardAdapter(Context context, List<CardItem> cardList) {
         this.context = context;
@@ -55,17 +57,45 @@ public class CardAdapter extends BaseAdapter {
         title.setText(item.getTitle());
         description.setText(item.getDescription());
 
-        cardView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, InterviewActivity.class);
-            intent.putExtra("title", item.getTitle());
-            intent.putExtra("desc", item.getDescription());
-            context.startActivity(intent);
-        });
+        cardView.setOnClickListener(v -> handleCardClick(item));
 
         return convertView;
     }
 
-    // Search filter logic
+    private void handleCardClick(CardItem item) {
+        DbHelper dbHelper = new DbHelper(context);
+
+        SharedPreferences prefs = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        int userId = (int) prefs.getLong("user_id", -1);
+
+        if (userId == -1) {
+            Toast.makeText(context, "Please log in again.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int interviewId = dbHelper.getInterviewIdByTitle(item.getTitle());
+
+        if (interviewId == -1) {
+            Toast.makeText(context, "Interview not found in database.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        boolean added = dbHelper.addUserInterviewIfNotExists(userId, interviewId, 0, "Good");
+
+        if (added) {
+            Toast.makeText(context, "Interview added successfully!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Interview already exists.", Toast.LENGTH_SHORT).show();
+        }
+
+
+        Intent intent = new Intent(context, InterviewActivity.class);
+        intent.putExtra("title", item.getTitle());
+        intent.putExtra("desc", item.getDescription());
+        context.startActivity(intent);
+    }
+
+    // Search filter
     public void filter(String query) {
         filteredList.clear();
         if (query == null || query.trim().isEmpty()) {
