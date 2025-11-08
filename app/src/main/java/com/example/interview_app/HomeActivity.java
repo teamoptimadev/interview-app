@@ -2,6 +2,7 @@ package com.example.interview_app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -39,7 +40,8 @@ public class HomeActivity extends AppCompatActivity {
         cardItems = new ArrayList<>();
 
 
-//        cardItems.add(new CardItem("Frontend", "Modern UI development using React and Tailwind CSS for responsive and accessible web interfaces."));
+
+        cardItems.add(new CardItem("Frontend", "Modern UI development using React and Tailwind CSS for responsive and accessible web interfaces."));
 //        cardItems.add(new CardItem("Backend", "Server-side application development using Java Spring Boot with RESTful APIs and database integration."));
 //        cardItems.add(new CardItem("Full Stack", "Building scalable web applications integrating React frontend with Node.js and Express backend services."));
 //        cardItems.add(new CardItem("Android Development", "Developing native Android apps with Java and XML layouts, integrating APIs and local databases."));
@@ -77,7 +79,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         //end of empty check
-
 
 
 

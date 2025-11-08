@@ -44,22 +44,22 @@ public class InterviewActivity extends AppCompatActivity {
 
         addOneWord(container, "3. CSS stands for _______.");
 
-        addMCQ(container, "4. Which method is used to fetch data from APIs in React?",
-                new String[]{"useData()", "fetch()", "getAPI()", "loadData()"});
-
-        addTrueFalse(container, "5. JSX allows mixing HTML with JavaScript.");
-
-        addOneWord(container, "6. Name one React hook used for state management.");
-
-        addMCQ(container, "7. Which property is used to change text color in CSS?",
-                new String[]{"text-color", "font-color", "color", "foreground"});
-
-        addTrueFalse(container, "8. The <head> tag is visible in the browser window.");
-
-        addOneWord(container, "9. What keyword is used to declare a constant in JavaScript?");
-
-        addMCQ(container, "10. Which of these is NOT a frontend framework?",
-                new String[]{"Vue", "Angular", "Spring Boot", "Svelte"});
+//        addMCQ(container, "4. Which method is used to fetch data from APIs in React?",
+//                new String[]{"useData()", "fetch()", "getAPI()", "loadData()"});
+//
+//        addTrueFalse(container, "5. JSX allows mixing HTML with JavaScript.");
+//
+//        addOneWord(container, "6. Name one React hook used for state management.");
+//
+//        addMCQ(container, "7. Which property is used to change text color in CSS?",
+//                new String[]{"text-color", "font-color", "color", "foreground"});
+//
+//        addTrueFalse(container, "8. The <head> tag is visible in the browser window.");
+//
+//        addOneWord(container, "9. What keyword is used to declare a constant in JavaScript?");
+//
+//        addMCQ(container, "10. Which of these is NOT a frontend framework?",
+//                new String[]{"Vue", "Angular", "Spring Boot", "Svelte"});
 
 
 

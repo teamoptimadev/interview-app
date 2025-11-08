@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +15,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class LoginActivity extends AppCompatActivity {
+
+    DbHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,15 +29,34 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
+
         TextView signupTv=findViewById(R.id.signupText);
         Button loginBtn=findViewById(R.id.loginBtn);
+        EditText emailEt=findViewById(R.id.loginemailtv);
+        EditText passwordEt=findViewById(R.id.loginpasswordtv);
+        dbHelper = new DbHelper(this);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(i);
-                finish();
+                String email = emailEt.getText().toString().trim();
+                String pass = passwordEt.getText().toString().trim();
+
+                if (email.isEmpty() || pass.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "All fields required", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (dbHelper.checkUser(email, pass)) {
+                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                    Intent i=new Intent(LoginActivity.this,HomeActivity.class);
+                    startActivity(i);
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                }
+                
+
             }
         });
 

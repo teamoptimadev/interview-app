@@ -78,7 +78,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <EditText
-                android:id="@+id/editTextTextEmailAddress"
+                android:id="@+id/fullNametv"
                 android:layout_width="301dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="70dp"
@@ -93,7 +93,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
             <EditText
-                android:id="@+id/editTextText"
+                android:id="@+id/emailtv"
                 android:layout_width="301dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="50dp"
@@ -105,10 +105,10 @@
                 android:inputType="text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+                app:layout_constraintTop_toBottomOf="@+id/fullNametv" />
 
             <EditText
-                android:id="@+id/editTextPassword"
+                android:id="@+id/passwordtv"
                 android:layout_width="301dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="50dp"
@@ -120,7 +120,7 @@
                 android:inputType="textPassword"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+                app:layout_constraintTop_toBottomOf="@+id/emailtv" />
 
             <Button
                 android:id="@+id/signupBtn"
@@ -139,7 +139,7 @@
                 android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+                app:layout_constraintTop_toBottomOf="@+id/passwordtv" />
 
             <TextView
                 android:id="@+id/loginText"
