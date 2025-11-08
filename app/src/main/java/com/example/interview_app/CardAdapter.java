@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ public class CardAdapter extends BaseAdapter {
         TextView title = convertView.findViewById(R.id.title);
         TextView description = convertView.findViewById(R.id.description);
         CardView cardView = convertView.findViewById(R.id.cardContainer);
+        ImageButton deleteBtn = convertView.findViewById(R.id.interviewDeleteBtn);
 
         CardItem item = filteredList.get(position);
 
@@ -59,8 +61,42 @@ public class CardAdapter extends BaseAdapter {
 
         cardView.setOnClickListener(v -> handleCardClick(item));
 
+        deleteBtn.setOnClickListener(v -> handleDeleteClick(item, position));
+
+
+
         return convertView;
     }
+
+    private void handleDeleteClick(CardItem item, int position) {
+        DbHelper dbHelper = new DbHelper(context);
+
+        SharedPreferences prefs = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        int userId = (int) prefs.getLong("user_id", -1);
+
+        if (userId == -1) {
+            Toast.makeText(context, "Please log in again.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int interviewId = dbHelper.getInterviewIdByTitle(item.getTitle());
+        if (interviewId == -1) {
+            Toast.makeText(context, "Interview not found in DB.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        boolean deleted = dbHelper.deleteUserInterview(userId, interviewId);
+
+        if (deleted) {
+            filteredList.remove(position);
+            originalList.remove(item);
+            notifyDataSetChanged();
+            Toast.makeText(context, "Interview deleted successfully.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Failed to delete interview.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void handleCardClick(CardItem item) {
         DbHelper dbHelper = new DbHelper(context);
@@ -85,7 +121,7 @@ public class CardAdapter extends BaseAdapter {
         if (added) {
             Toast.makeText(context, "Interview added successfully!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, "Interview already exists.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Interview Started.", Toast.LENGTH_SHORT).show();
         }
 
 

@@ -37,7 +37,7 @@ public class HomeActivity extends AppCompatActivity {
 
         ImageButton logoutButton=findViewById(R.id.logoutButton);
         ImageButton fabAdd=findViewById(R.id.fabAdd);
-        ImageView profileImage=findViewById(R.id.profileImage);
+        TextView profileImage=findViewById(R.id.profileImage);
         listView = findViewById(R.id.listView);
 
         dbHelper = new DbHelper(this);
@@ -52,6 +52,23 @@ public class HomeActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        fullName = fullName.trim();
+        String initials = "";
+        if (fullName.length() == 1) {
+            initials = fullName.substring(0, 1).toUpperCase();
+        } else if (fullName.contains(" ")) {
+            String[] parts = fullName.split("\\s+");
+            char first = parts[0].charAt(0);
+            char last = parts[parts.length - 1].charAt(0);
+            initials = ("" + first + last).toUpperCase();
+        } else {
+            char first = fullName.charAt(0);
+            char last = fullName.charAt(fullName.length() - 1);
+            initials = ("" + first + last).toUpperCase();
+        }
+
+        profileImage.setText(initials);
 
 
 
@@ -129,6 +146,19 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    private void updateEmptyState() {
+        LinearLayout emptyLayout = findViewById(R.id.emptyLayout);
+        ListView listView = findViewById(R.id.listView);
+
+        if (cardItems == null || cardItems.isEmpty()) {
+            listView.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     protected void onResume() {
@@ -145,6 +175,8 @@ public class HomeActivity extends AppCompatActivity {
         cardItems.clear();
         cardItems.addAll(updatedItems);
         adapter.notifyDataSetChanged();
+
+        updateEmptyState();
     }
 
 }

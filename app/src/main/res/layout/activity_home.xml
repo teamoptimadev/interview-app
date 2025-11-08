@@ -30,12 +30,16 @@
         android:translationZ="8dp">
 
 
-      <ImageView
+      <TextView
           android:id="@+id/profileImage"
           android:layout_width="40dp"
           android:layout_height="40dp"
           android:scaleType="centerCrop"
-          android:src="@drawable/ic_profile_placeholder"
+          android:text="KV"
+          android:textSize="20sp"
+          android:textStyle="bold"
+          android:layout_gravity="center"
+          android:gravity="center"
           android:background="@drawable/circle_bg"
           android:clipToOutline="true"
           android:contentDescription="Profile" />

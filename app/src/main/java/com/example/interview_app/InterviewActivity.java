@@ -2,72 +2,79 @@ package com.example.interview_app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import org.w3c.dom.Text;
+import java.util.*;
 
 public class InterviewActivity extends AppCompatActivity {
 
-    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
+    DbHelper dbHelper;
+    private final List<Question> questionList = new ArrayList<>();
+    private final Map<Integer, Object> userAnswers = new HashMap<>();
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interview);
 
-        Button submitBtn=new Button(this);
-
-
-
         LinearLayout container = findViewById(R.id.questionContainer);
-        TextView interviewTitle=findViewById(R.id.interviewTitle);
-        TextView interviewDesc=findViewById(R.id.interviewDesc);
+        TextView interviewTitle = findViewById(R.id.interviewTitle);
+        TextView interviewDesc = findViewById(R.id.interviewDesc);
 
-        addMCQ(container, "1. Which HTML tag is used to include JavaScript code?",
-                new String[]{"<script>", "<js>", "<javascript>", "<code>"});
+        dbHelper = new DbHelper(this);
 
-        addTrueFalse(container, "2. React is a backend framework. (True/False)");
+        Intent i = getIntent();
+        String title = i.getStringExtra("title");
+        String desc = i.getStringExtra("desc");
 
-        addOneWord(container, "3. CSS stands for _______.");
+        interviewTitle.setText(title);
+        interviewDesc.setText(desc);
 
-//        addMCQ(container, "4. Which method is used to fetch data from APIs in React?",
-//                new String[]{"useData()", "fetch()", "getAPI()", "loadData()"});
-//
-//        addTrueFalse(container, "5. JSX allows mixing HTML with JavaScript.");
-//
-//        addOneWord(container, "6. Name one React hook used for state management.");
-//
-//        addMCQ(container, "7. Which property is used to change text color in CSS?",
-//                new String[]{"text-color", "font-color", "color", "foreground"});
-//
-//        addTrueFalse(container, "8. The <head> tag is visible in the browser window.");
-//
-//        addOneWord(container, "9. What keyword is used to declare a constant in JavaScript?");
-//
-//        addMCQ(container, "10. Which of these is NOT a frontend framework?",
-//                new String[]{"Vue", "Angular", "Spring Boot", "Svelte"});
+        int interviewId = dbHelper.getInterviewIdByTitle(title);
+        questionList.addAll(dbHelper.getQuestionsByInterviewId(interviewId));
 
+        if (questionList.isEmpty()) {
+            TextView noQuestions = new TextView(this);
+            noQuestions.setText("No questions available for this interview.");
+            noQuestions.setTextSize(16);
+            noQuestions.setPadding(16, 16, 16, 16);
+            container.addView(noQuestions);
+        } else {
+            int index = 1;
+            for (Question q : questionList) {
+                switch (q.getType()) {
+                    case "MCQ":
+                        RadioGroup mcqGroup = addMCQ(container, index + ". " + q.getText(),
+                                new String[]{q.getOption1(), q.getOption2(), q.getOption3(), q.getOption4()});
+                        userAnswers.put(index - 1, mcqGroup);
+                        break;
 
+                    case "TrueFalse":
+                        RadioGroup tfGroup = addTrueFalse(container, index + ". " + q.getText());
+                        userAnswers.put(index - 1, tfGroup);
+                        break;
 
+                    case "OneWord":
+                        EditText et = addOneWord(container, index + ". " + q.getText());
+                        userAnswers.put(index - 1, et);
+                        break;
+                }
+                index++;
+            }
+        }
+
+        Button submitBtn = new Button(this);
         submitBtn.setText("Submit");
         submitBtn.setTextColor(getResources().getColor(R.color.primary_foreground));
         submitBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         submitBtn.setBackground(getDrawable(R.drawable.rounded_button_bg));
         submitBtn.setBackgroundTintList(null);
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics()),
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 45, getResources().getDisplayMetrics())
@@ -78,26 +85,65 @@ public class InterviewActivity extends AppCompatActivity {
         submitBtn.setLayoutParams(params);
         container.addView(submitBtn);
 
-
-
-        Intent i=getIntent();
-        String title=i.getStringExtra("title");
-        String desc=i.getStringExtra("desc");
-
-        interviewTitle.setText(title);
-        interviewDesc.setText(desc);
-
-
         submitBtn.setOnClickListener(view -> {
-            Toast.makeText(this, title+"\n interview completed", Toast.LENGTH_SHORT).show();
-            Intent intent=new Intent(InterviewActivity.this, HomeActivity.class);
-            startActivity(intent);
+            if (questionList.isEmpty()) {
+                Toast.makeText(this, "No questions available.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int correctCount = checkAllAnswers();
+            int total = questionList.size();
+
+            double scorePercent = (correctCount * 100.0) / total;
+            String performance;
+            if (scorePercent >= 80) performance = "Excellent";
+            else if (scorePercent >= 50) performance = "Good";
+            else performance = "Needs Improvement";
+
+            SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+            int userId = (int) prefs.getLong("user_id", -1);
+
+            if (userId != -1 && interviewId != -1) {
+                dbHelper.updateUserInterviewScore(userId, interviewId, scorePercent, performance);
+            } else {
+                Toast.makeText(this, "User session or interview data missing.", Toast.LENGTH_SHORT).show();
+            }
+
+            Toast.makeText(this,
+                    "You answered " + correctCount + "/" + total + " correctly.\nPerformance: " + performance,
+                    Toast.LENGTH_LONG).show();
+
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
         });
-
     }
 
-    private void addMCQ(LinearLayout parent, String question, String[] options) {
+    private int checkAllAnswers() {
+        int correct = 0;
+        for (int i = 0; i < questionList.size(); i++) {
+            Question q = questionList.get(i);
+            String userAnswer = "";
+
+            if (q.getType().equals("MCQ") || q.getType().equals("TrueFalse")) {
+                RadioGroup group = (RadioGroup) userAnswers.get(i);
+                int selectedId = group.getCheckedRadioButtonId();
+                if (selectedId != -1) {
+                    RadioButton selected = group.findViewById(selectedId);
+                    userAnswer = selected.getText().toString().trim();
+                }
+            } else if (q.getType().equals("OneWord")) {
+                EditText et = (EditText) userAnswers.get(i);
+                userAnswer = et.getText().toString().trim();
+            }
+
+            if (userAnswer.equalsIgnoreCase(q.getAnswer().trim())) {
+                correct++;
+            }
+        }
+        return correct;
+    }
+
+    private RadioGroup addMCQ(LinearLayout parent, String question, String[] options) {
         TextView qView = new TextView(this);
         qView.setText(question);
         qView.setTextSize(16);
@@ -107,29 +153,24 @@ public class InterviewActivity extends AppCompatActivity {
 
         RadioGroup group = new RadioGroup(this);
         for (String opt : options) {
+            if (opt == null) continue;
             RadioButton rb = new RadioButton(this);
             rb.setText(opt);
             group.addView(rb);
         }
 
-        //margin
-        int bottomMarginDp = 20;
-        float scale = getResources().getDisplayMetrics().density;
-        int bottomMarginPx = (int) (bottomMarginDp * scale + 0.5f);
-
-        // Apply margins using LayoutParams
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.setMargins(0, 0, 0, bottomMarginPx);
+        params.setMargins(0, 0, 0, dpToPx(20));
         group.setLayoutParams(params);
-    //margin
 
         parent.addView(group);
+        return group;
     }
 
-    private void addTrueFalse(LinearLayout parent, String question) {
+    private RadioGroup addTrueFalse(LinearLayout parent, String question) {
         TextView qView = new TextView(this);
         qView.setText(question);
         qView.setTextSize(16);
@@ -144,22 +185,19 @@ public class InterviewActivity extends AppCompatActivity {
             rb.setText(opt);
             group.addView(rb);
         }
-        //margin
-        int bottomMarginDp = 20;
-        float scale = getResources().getDisplayMetrics().density;
-        int bottomMarginPx = (int) (bottomMarginDp * scale + 0.5f);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.setMargins(0, 0, 0, bottomMarginPx);
+        params.setMargins(0, 0, 0, dpToPx(20));
         group.setLayoutParams(params);
-        //margin
         parent.addView(group);
+
+        return group;
     }
 
-    private void addOneWord(LinearLayout parent, String question) {
+    private EditText addOneWord(LinearLayout parent, String question) {
         TextView qView = new TextView(this);
         qView.setText(question);
         qView.setTextSize(16);
@@ -167,21 +205,24 @@ public class InterviewActivity extends AppCompatActivity {
         qView.setPadding(0, 8, 0, 4);
         parent.addView(qView);
 
-        android.widget.EditText answer = new android.widget.EditText(this);
+        EditText answer = new EditText(this);
         answer.setHint("Your answer...");
         answer.setBackgroundResource(R.drawable.rounded_input_bg);
         answer.setPadding(16, 8, 16, 8);
-        //margin
-        int bottomMarginDp = 20;
-        float scale = getResources().getDisplayMetrics().density;
-        int bottomMarginPx = (int) (bottomMarginDp * scale + 0.5f);
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.setMargins(0, 0, 0, bottomMarginPx);
+        params.setMargins(0, 0, 0, dpToPx(20));
         answer.setLayoutParams(params);
-        //margin
+
         parent.addView(answer);
+        return answer;
+    }
+
+    private int dpToPx(int dp) {
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 }

@@ -39,5 +39,6 @@
 
         <color name="green_500">#22c55e</color>
         <color name="yellow_500">#eab308</color>
+        <color name="red_500">#ef4444</color>
 
 </resources>

@@ -179,9 +179,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
         long userId = db.insert("users", null, values);
 
-        // ✅ Store user session locally if registration successful
         if (userId != -1) {
-            Context context = getContextFromDatabase(db); // we'll add helper for this
+            Context context = getContextFromDatabase(db);
             if (context != null) {
                 android.content.SharedPreferences prefs =
                         context.getSharedPreferences("UserSession", Context.MODE_PRIVATE);
@@ -255,7 +254,6 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-
     public boolean addUserInterviewIfNotExists(int userId, int interviewId, double score, String performance) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -291,6 +289,96 @@ public class DbHelper extends SQLiteOpenHelper {
         cursor.close();
         return id;
     }
+
+
+    public boolean deleteUserInterview(int userId, int interviewId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsDeleted = db.delete(
+                "user_interviews",
+                "user_id = ? AND interview_id = ?",
+                new String[]{String.valueOf(userId), String.valueOf(interviewId)}
+        );
+        return rowsDeleted > 0;
+    }
+
+
+    public List<Question> getQuestionsByInterviewId(int interviewId) {
+        List<Question> questions = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT question_type, question_text, option1, option2, option3, option4, answer " +
+                        "FROM questions WHERE interview_id = ?",
+                new String[]{String.valueOf(interviewId)}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                String type = cursor.getString(cursor.getColumnIndexOrThrow("question_type"));
+                String text = cursor.getString(cursor.getColumnIndexOrThrow("question_text"));
+                String opt1 = cursor.getString(cursor.getColumnIndexOrThrow("option1"));
+                String opt2 = cursor.getString(cursor.getColumnIndexOrThrow("option2"));
+                String opt3 = cursor.getString(cursor.getColumnIndexOrThrow("option3"));
+                String opt4 = cursor.getString(cursor.getColumnIndexOrThrow("option4"));
+                String answer = cursor.getString(cursor.getColumnIndexOrThrow("answer"));
+
+                questions.add(new Question(type, text, opt1, opt2, opt3, opt4, answer));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return questions;
+    }
+
+
+    public void updateUserInterviewScore(int userId, int interviewId, double scorePercent, String performance) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("score", scorePercent);
+        values.put("performance", performance);
+
+        int rows = db.update("user_interviews", values, "user_id=? AND interview_id=?",
+                new String[]{String.valueOf(userId), String.valueOf(interviewId)});
+
+        if (rows == 0) {
+            values.put("user_id", userId);
+            values.put("interview_id", interviewId);
+            db.insert("user_interviews", null, values);
+        }
+
+        db.execSQL("UPDATE users SET " +
+                        "interviews_attended = interviews_attended + 1, " +
+                        "accuracy = ?, " +
+                        "performance = ? " +
+                        "WHERE id = ?",
+                new Object[]{scorePercent, performance, userId});
+    }
+
+
+
+
+    public UserStats getUserStats(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT interviews_attended, accuracy, performance FROM users WHERE id = ?",
+                new String[]{String.valueOf(userId)}
+        );
+
+        UserStats stats = null;
+
+        if (cursor.moveToFirst()) {
+            int interviewsAttended = cursor.getInt(cursor.getColumnIndexOrThrow("interviews_attended"));
+            float accuracy = cursor.getFloat(cursor.getColumnIndexOrThrow("accuracy"));
+            String performance = cursor.getString(cursor.getColumnIndexOrThrow("performance"));
+            stats = new UserStats(interviewsAttended, accuracy, performance);
+        }
+
+        cursor.close();
+        db.close();
+        return stats;
+    }
+
 
 
 
