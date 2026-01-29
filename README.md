@@ -14,6 +14,7 @@ Built as a **Mini Project** for the course **Mobile Application Development (CSE
 - Automatic performance & accuracy calculation
 - Dashboard with statistics and bar chart visualization
 - Fully offline (SQLite database)
+- Light & Dark mode support
 - Logout with session clearing
 
 ---
@@ -29,7 +30,7 @@ Built as a **Mini Project** for the course **Mobile Application Development (CSE
 
 ---
 
-## App Screens
+## App Screens (Light Mode)
 
 ### Login & Signup
 <p align="center">
@@ -54,7 +55,17 @@ Built as a **Mini Project** for the course **Mobile Application Development (CSE
   <img src="preview_images/interview_7.png" width="250"/>
 </p>
 
-> Place all screenshots inside a `preview_images/` folder in the root directory.
+---
+
+## App Screens (Dark Mode)
+
+<p align="center">
+  <img src="preview_images/interview_2_dark.png" width="250"/>
+  <img src="preview_images/interview_3_dark.png" width="250"/>
+  <img src="preview_images/interview_7_dark.png" width="250"/>
+</p>
+
+> The app automatically adapts to the system theme (Light/Dark mode).
 
 ---
 
@@ -65,6 +76,7 @@ Built as a **Mini Project** for the course **Mobile Application Development (CSE
 - **Add Interview:** Create and store interviews in SQLite
 - **Attend Interview:** Answer questions and calculate score
 - **Dashboard:** View total interviews, accuracy, performance (bar graph)
+- **Theme Support:** Light & Dark mode based on system settings
 - **Logout:** Clears session data
 
 ---
@@ -92,7 +104,8 @@ Built as a **Mini Project** for the course **Mobile Application Development (CSE
 
 - This is a **local-only app** (no backend, no cloud sync).
 - SharedPreferences authentication is suitable for academic use, not production.
-- Offline-first design using SQLite fits the project scope well.
+- SQLite + offline-first approach fits the project scope well.
+- Dark mode improves usability and accessibility.
 
 ---
 
