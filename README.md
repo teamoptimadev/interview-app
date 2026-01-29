@@ -32,21 +32,29 @@ Built as a **Mini Project** for the course **Mobile Application Development (CSE
 ## App Screens
 
 ### Login & Signup
-![Login Screen](preview_images/interview_2.png)
-![Signup Screen](preview_images/interview_1.png)
+<p align="center">
+  <img src="preview_images/interview_2.png" width="250"/>
+  <img src="preview_images/interview_1.png" width="250"/>
+</p>
 
 ### Home & Add Interview
-![Home Screen](preview_images/interview_3.png)
-![Home Screen 2](preview_images/interview_4.png)
-![Add Interview](preview_images/interview_5.png)
+<p align="center">
+  <img src="preview_images/interview_3.png" width="250"/>
+  <img src="preview_images/interview_4.png" width="250"/>
+  <img src="preview_images/interview_5.png" width="250"/>
+</p>
 
 ### Attend Interview
-![Attend Interview](preview_images/interview_6.png)
+<p align="center">
+  <img src="preview_images/interview_6.png" width="250"/>
+</p>
 
 ### Dashboard
-![Dashboard](preview_images/interview_7.png)
+<p align="center">
+  <img src="preview_images/interview_7.png" width="250"/>
+</p>
 
->  Place all screenshots inside a `screenshots/` folder in the root directory.
+> Place all screenshots inside a `preview_images/` folder in the root directory.
 
 ---
 
@@ -80,12 +88,11 @@ Built as a **Mini Project** for the course **Mobile Application Development (CSE
 
 ---
 
-## Notes (Brutally Honest)
+## Notes
 
 - This is a **local-only app** (no backend, no cloud sync).
-- SharedPreferences auth is fine for a college project — **not production-safe**.
-- SQLite + offline focus is a good design choice given scope.
-- If you want this to look industry-grade later: add Firebase/Auth + Room + MVVM.
+- SharedPreferences authentication is suitable for academic use, not production.
+- Offline-first design using SQLite fits the project scope well.
 
 ---
 
