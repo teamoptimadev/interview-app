@@ -19,6 +19,17 @@ Built as a **Mini Project** for the course **Mobile Application Development (CSE
 
 ---
 
+## Download APK
+
+You can download and install the app directly on an Android device:
+
+-  **APK:** [Interview App v1.0](release/InterviewApp-v1.0.apk)
+-  **Android:** 8.0 and above
+
+> Enable **“Install unknown apps”** on your device to install the APK.
+
+---
+
 ## Tech Stack
 
 - **Language:** Java
